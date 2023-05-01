@@ -49,7 +49,19 @@ class Scenery(db.Model):
     def dateBuilt(self, dateBuilt):
         self._dateBuilt = dateBuilt
 
-# Add image setter and getter here    
+# Example added for image setter getter, someone please change it so it works
+class ImagesAPI:
+    class _EasyImages(Resource):
+        def get(self):
+            image = get_random_easy_image()
+            json_data = {}
+            if image:
+                image_path = project_path + "/" + image.imagePath
+                with open(image_path, "rb") as image_file:
+                    json_data["bytes"] = str(base64.b64encode(image_file.read()))[2:][:-1]
+                json_data["xCoord"] = image.xCoord
+                json_data["yCoord"] = image.yCoord
+            return jsonify(json_data)    
 
     def read(self):
         return {
