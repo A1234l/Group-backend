@@ -2,10 +2,10 @@
 # ex: if flask_cors is not showing, do "pip install flask_cors" and "pip install cors"
 
 from flask_cors import CORS
-from hacks_api import app, db
+from hacks_api.__init__ import app, db
 
-from hacks_api.api.api import # bp for table
-from hacks_api.model.scenery import initSceneries # initializing function
+from hacks_api.api.wonders import # bp for table
+from hacks_api.model.scenery import # initializing function
 
 app.register_blueprint(# bp for table)
 
