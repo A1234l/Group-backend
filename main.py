@@ -4,9 +4,9 @@
 from flask_cors import CORS
 from hacks_api.__init__ import app, db
 
-from hacks_api.api.wonders import ImageAPI
+from hacks_api.api.wonders import Images
 from hacks_api.model.scenery2 import create_images
-app.register_blueprint()
+app.register_blueprint(Images)
 
 
 
