@@ -91,18 +91,18 @@ class Images(db.Model):
         db.session.commit()
         return None
     
-def initEasyImages():
-    with app.app_context():
-        db.create_all()
-        image_dir = Path.cwd()/"images/"
-        images_paths = [i.name for i in image_dir.iterdir()]
-        images = [Images("images/" + image, 250, 250, 0) for image in images_paths]
-        for image in images:
-             try:
-                image.create()
-                print("Successfully added entry")
-             except:
-                 db.session.remove()
-                 print("Error adding image: ", image.imagePath)
+    def initImages():
+        with app.app_context():
+            db.create_all()
+            image_dir = Path.cwd()/"images/"
+            images_paths = [i.name for i in image_dir.iterdir()]
+            images = [Images("images/" + image, 250, 250, 0) for image in images_paths]
+            for image in images:
+                try:
+                    image.create()
+                    print("Successfully added entry")
+                except:
+                    db.session.remove()
+                    print("Error adding image: ", image.imagePath)
 
-initEasyImages()
+    initImages()

@@ -4,17 +4,18 @@
 from flask_cors import CORS
 from hacks_api.__init__ import app, db
 
-from hacks_api.api.wonders import Images
-from hacks_api.model.scenery2 import create_images
-app.register_blueprint(Images)
-
-
+from hacks_api.api.imagesapi import images_api
+from hacks_api.model.image import initImages
+from hacks_api.model.scenery import initSceneries
+# from hacks_api.model.scenery2 import create_images
+app.register_blueprint(images_api)
 
 @app.before_first_request
 def init_db():
-    with app.app_context():
-        db.create_all()
-        create_images()
+        # create_images()
+        initImages()
+        initSceneries()
+
 
 
 if __name__ == "__main__":
