@@ -2,7 +2,10 @@ from __init__ import app, db
 from sqlalchemy.exc import IntegrityError
 import json
 from PIL import Image
+import sqlite3
 import io
+from pathlib import Path
+from sqlalchemy import Column, Integer, String, Text, LargeBinary
 
 # place your model code here
 # you can use the code we showed in our lesson as an example
@@ -17,13 +20,12 @@ class Scenery(db.Model):
     _name = db.Column(db.String(255), unique=False, nullable=False)
     _location = db.Column(db.String(255), nullable=False)
     _dateBuilt = db.Column(db.String(255), nullable=False)
-    _image = db.Column(db.Image, nullable=False)
+    _image = db.Column(db.Text, nullable=False)
 
-    def __init__(self, name, location, dateBuilt, image):
+    def __init__(self, name, location, dateBuilt):
         self._name = name
         self._location = location
         self._dateBuilt = dateBuilt
-        self._image = image
    
     @property
     def name(self):
@@ -49,27 +51,12 @@ class Scenery(db.Model):
     def dateBuilt(self, dateBuilt):
         self._dateBuilt = dateBuilt
 
-# Example added for image setter getter, someone please change it so it works
-class ImagesAPI:
-    class _EasyImages(Resource):
-        def get(self):
-            image = get_random_easy_image()
-            json_data = {}
-            if image:
-                image_path = project_path + "/" + image.imagePath
-                with open(image_path, "rb") as image_file:
-                    json_data["bytes"] = str(base64.b64encode(image_file.read()))[2:][:-1]
-                json_data["xCoord"] = image.xCoord
-                json_data["yCoord"] = image.yCoord
-            return jsonify(json_data)    
-
     def read(self):
         return {
             "id": self.id,
             "name": self.name,
             "location": self.location,
-            "dateBuilt": self.dateBuilt,
-            "image": self.image
+            "dateBuilt": self.dateBuilt
         }
 
     # 
@@ -93,7 +80,7 @@ class ImagesAPI:
     # 
     # Updates Leaderboard DB rows for points and user data
     #                
-    def update(self, name="", location="", dateBuilt="", image=""):
+    def update(self, name="", location="", dateBuilt=""):
         """only updates values with length"""
         if len(name) > 0:
             self.name = name
@@ -101,8 +88,6 @@ class ImagesAPI:
             self.location = location
         if len(dateBuilt) > 0:
             self.dateBuilt = dateBuilt
-        if image:
-            self.image = image
         db.session.add(self)
         db.session.commit()
         return self
@@ -112,27 +97,27 @@ class ImagesAPI:
         db.session.commit()
         return None
     
-def init_leaderboards():
+def initSceneries():
     with app.app_context():
         """Create database and tables"""
         db.create_all()
         """Tester data for table"""
-        l1 = Leaderboard(username="bob", password="apple", pointsEasy=2, pointsMedium=5, pointsHard=3)
-        l2 = Leaderboard(username="bobby", password="appley", pointsEasy=20, pointsMedium=50, pointsHard=30)
-        l3 = Leaderboard(username="bobbert", password="appled", pointsEasy=200, pointsMedium=500, pointsHard=300)
-        l4 = Leaderboard(username="bobruth", password="appler", pointsEasy=100, pointsMedium=300, pointsHard=500)
-        leaderboards = [l1, l2, l3, l4]
+        p1 = Scenery(name="Chichen Itza", location="Mexico", dateBuilt="400s AD")
+        p2 = Scenery(name="Great Wall of China", location="China", dateBuilt="220 BC")
+        p3 = Scenery(name="Christ the Redeemer", location="Brazil", dateBuilt="1931")
+        p4 = Scenery(name="Taj Mahal", location="India", dateBuilt="1653")
+        places = [p1, p2, p3, p4]
 
         """Builds sample user/note(s) data"""
-        for l in leaderboards:
+        for p in places:
             try:
                 '''add user to table'''
-                object = l.create()
-                print(f"Created new uid {object.username}")
-                db.session.add(l)
+                object = p.create()
+                print(f"Created new uid {object.name}")
+                db.session.add(p)
                 db.session.commit()
             except:
                 '''fails with bad or duplicate data'''
-                print(f"Records exist uid {l.username}, or error.")
+                print(f"Records exist uid {p.name}, or error.")
 
-init_leaderboards()
+initSceneries()

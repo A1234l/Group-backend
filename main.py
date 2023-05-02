@@ -5,7 +5,7 @@ from flask_cors import CORS
 from hacks_api import app, db
 
 from hacks_api.api.api import # bp for table
-from hacks_api.model.model import # initializing function
+from hacks_api.model.scenery import initSceneries # initializing function
 
 app.register_blueprint(# bp for table)
 
